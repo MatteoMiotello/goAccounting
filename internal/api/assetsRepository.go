@@ -1,8 +1,8 @@
 package api
 
 import (
+	"github.com/MatteoMiotello/goAccounting/internal/db"
 	"github.com/MatteoMiotello/goAccounting/models"
-	"github.com/MatteoMiotello/goAccounting/pkg/db"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

@@ -21,11 +21,13 @@ RUN go get -d -v ./...
 # Install the package
 RUN go install -v ./...
 
+RUN go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+
 # Build the Go app
-RUN go build -o /build
+# RUN go build -o /build
 
 # Expose port 8080 to the outside world
 EXPOSE 8080
 
 # Run the executable
-CMD [ "air" ]
+CMD [ "air", "-c", ".air.toml"]

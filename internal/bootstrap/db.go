@@ -1,7 +1,7 @@
 package bootstrap
 
 import (
-	"github.com/MatteoMiotello/goAccounting/pkg/db"
+	"github.com/MatteoMiotello/goAccounting/internal/db"
 )
 
 type Db struct {

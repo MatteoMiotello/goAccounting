@@ -1,7 +1,7 @@
 package bootstrap
 
 import (
-	"github.com/MatteoMiotello/goAccounting/pkg/api"
+	"github.com/MatteoMiotello/goAccounting/internal/api"
 	"github.com/gin-gonic/gin"
 )
 
