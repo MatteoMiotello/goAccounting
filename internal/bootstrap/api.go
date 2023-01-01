@@ -1,23 +1,31 @@
 package bootstrap
 
 import (
-	"github.com/MatteoMiotello/goAccounting/internal/api"
+	"github.com/MatteoMiotello/goAccounting/internal/controllers"
 	"github.com/gin-gonic/gin"
 )
 
 type Api struct {
 }
 
+func registerRoutes(router *gin.Engine) {
+	userGroup := router.Group("user")
+	userController := new(controllers.User)
+	userGroup.GET("", userController.GetAllUser)
+	userGroup.POST("", userController.CreateUser)
+
+	assetGroup := router.Group("asset")
+	assetController := new(controllers.Asset)
+	assetGroup.GET("", assetController.GetAllAssets)
+	assetGroup.POST("", assetController.CreateAsset)
+}
+
 func (a Api) Init() error {
-	engine := gin.Default()
-	baseRepo := api.Repository{Api: engine}
+	router := gin.Default()
 
-	err := api.AssetsRepository{Repository: baseRepo}.HandleRequests()
-	if err != nil {
-		return err
-	}
+	registerRoutes(router)
 
-	err = engine.Run()
+	err := router.Run()
 	if err != nil {
 		return err
 	}

@@ -14,3 +14,11 @@ func (d Db) Init() error {
 	}
 	return nil
 }
+
+func (d Db) InitMigration() error {
+	err := db.Initialize(db.PostgresMigrationAdapter{})
+	if err != nil {
+		return err
+	}
+	return nil
+}

@@ -18,7 +18,5 @@ func (p PostgresAdapter) GetAdapter() gorm.Dialector {
 		viper.Get("DB_PORT"),
 		viper.Get("DB_PASSWORD"))
 
-	fmt.Println(dsn)
-
 	return postgres.Open(dsn)
 }
