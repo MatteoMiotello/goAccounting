@@ -1,7 +1,7 @@
 package models
 
 type Transaction struct {
-	ID
+	PrimaryKey
 	AssetID               uint
 	TransactionCategoryID uint
 	Amount                float64

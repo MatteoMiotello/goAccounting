@@ -49,9 +49,14 @@ func (u *User) CreateUser(context *gin.Context) {
 }
 
 func (u *User) GetAllUser(context *gin.Context) {
-	users := [...]interface{}{}
+	var users []models.User
 
-	db.DB.Model(&models.User{}).Find(users)
+	err := db.DB.Preload("Assets").Find(&users).Error
+
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, api.ResFromError(err))
+		return
+	}
 
 	context.JSON(http.StatusOK, api.ResFromData(users))
 }

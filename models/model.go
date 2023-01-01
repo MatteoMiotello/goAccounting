@@ -10,7 +10,7 @@ type UpdatedCreated struct {
 	UpdatedAt time.Time `json:"updatedAt,string,omitempty"`
 }
 
-type ID struct {
+type PrimaryKey struct {
 	ID uint `json:"id" gorm:"primaryKey"`
 }
 
