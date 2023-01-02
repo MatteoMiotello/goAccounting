@@ -9,7 +9,7 @@ import (
 )
 
 type Asset struct {
-	*Base
+	Base
 }
 
 type createAssetDto struct {
@@ -26,7 +26,9 @@ func (c *Asset) GetAllAssets(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusOK, api.ResFromData(assets))
+	context.JSON(http.StatusOK, api.Response{
+		Data: assets,
+	})
 }
 
 func (c *Asset) CreateAsset(context *gin.Context) {
@@ -54,5 +56,5 @@ func (c *Asset) CreateAsset(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusCreated, api.ResFromData(newAsset))
+	context.JSON(http.StatusCreated, api.Response{Data: newAsset})
 }

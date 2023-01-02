@@ -5,5 +5,5 @@ import (
 )
 
 func main() {
-	bootstrap.Initialize()
+	bootstrap.Run()
 }

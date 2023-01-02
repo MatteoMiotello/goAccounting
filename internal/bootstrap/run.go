@@ -6,7 +6,7 @@ var initializers = [...]Initializer{
 	Api{},
 }
 
-func Initialize() {
+func Run() {
 	for _, initializer := range initializers {
 		err := initializer.Init()
 		if err != nil {

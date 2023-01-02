@@ -1,0 +1,5 @@
+security:
+  jwt:
+    issuer: "goAccounting"
+    expiration: 180
+    cookie-key: "auth"

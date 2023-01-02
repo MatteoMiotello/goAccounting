@@ -10,7 +10,7 @@ import (
 )
 
 type User struct {
-	*Base
+	Base
 }
 
 func (u *User) CreateUser(context *gin.Context) {
@@ -45,18 +45,18 @@ func (u *User) CreateUser(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusCreated, api.ResFromData(newUser))
+	context.JSON(http.StatusCreated, api.Response{Data: newUser})
 }
 
 func (u *User) GetAllUser(context *gin.Context) {
 	var users []models.User
 
-	err := db.DB.Preload("Assets").Find(&users).Error
+	err := db.DB.Find(&users).Error
 
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, api.ResFromError(err))
 		return
 	}
 
-	context.JSON(http.StatusOK, api.ResFromData(users))
+	context.JSON(http.StatusOK, api.Response{Data: users})
 }
