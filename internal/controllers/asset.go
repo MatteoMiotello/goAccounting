@@ -8,9 +8,7 @@ import (
 	"net/http"
 )
 
-type Asset struct {
-	Base
-}
+type Asset Base
 
 type createAssetDto struct {
 	Name   string `json:"name" binding:"required"`

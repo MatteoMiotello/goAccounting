@@ -9,9 +9,7 @@ import (
 	"net/http"
 )
 
-type User struct {
-	Base
-}
+type User Base
 
 func (u *User) CreateUser(context *gin.Context) {
 	newUser := &models.User{}

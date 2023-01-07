@@ -25,6 +25,11 @@ func registerRoutes(router *gin.Engine) {
 	assetController := new(controllers.Asset)
 	assetGroup.GET("", assetController.GetAllAssets)
 	assetGroup.POST("", assetController.CreateAsset)
+
+	transactionGroup := router.Group("transaction")
+	transactionGroup.Use(api.IsAuthenticated)
+	transactionController := new(controllers.Transaction)
+	transactionGroup.POST("", transactionController.CreateTransaction)
 }
 
 func (a Api) Init() error {

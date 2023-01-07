@@ -11,9 +11,7 @@ import (
 	"net/http"
 )
 
-type Login struct {
-	Base
-}
+type Login Base
 
 type SignInDto struct {
 	Email    string `json:"email" binding:"required"`
@@ -51,6 +49,6 @@ func (c *Login) SignIn(ctx *gin.Context) {
 		return
 	}
 
-	ctx.SetCookie(viper.GetString("security.jwt.cookie-key"), signedToken, viper.GetInt("security.jwt.expiration"), "/", "localhost", true, true)
+	ctx.SetCookie(viper.GetString("security.jwt.cookie-key"), signedToken, viper.GetInt("security.jwt.expiration	"), "/", "localhost", true, true)
 	ctx.JSON(http.StatusOK, api.Response{Data: user})
 }
