@@ -1,7 +1,9 @@
 package db
 
-import "gorm.io/gorm"
+import (
+	"github.com/lib/pq"
+)
 
 type dbAdapter interface {
-	GetAdapter() gorm.Dialector
+	GetConnector() (*pq.Connector, error)
 }

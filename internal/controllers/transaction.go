@@ -1,10 +1,13 @@
 package controllers
 
 import (
-	"github.com/MatteoMiotello/goAccounting/internal/db"
 	"github.com/MatteoMiotello/goAccounting/models"
 	"github.com/MatteoMiotello/goAccounting/pkg/api"
 	"github.com/gin-gonic/gin"
+	"github.com/volatiletech/null/v8"
+	"github.com/volatiletech/sqlboiler/v4/boil"
+	"github.com/volatiletech/sqlboiler/v4/queries/qm"
+	"github.com/volatiletech/sqlboiler/v4/types"
 	"net/http"
 )
 
@@ -15,10 +18,10 @@ type transactionCategoryDto struct {
 }
 
 type transactionDto struct {
-	AssetId     uint                   `json:"assetId" binding:"required"`
+	AssetId     int64                  `json:"assetId" binding:"required"`
 	Category    transactionCategoryDto `json:"category" binding:"required"`
-	Amount      float64                `json:"amount" binding:"required"`
-	Description string                 `json:"description" binding:"required"`
+	Amount      types.Decimal          `json:"amount" binding:"required"`
+	Description null.String            `json:"description" binding:"required"`
 }
 
 func (t *Transaction) CreateTransaction(ctx *gin.Context) {
@@ -30,23 +33,21 @@ func (t *Transaction) CreateTransaction(ctx *gin.Context) {
 		return
 	}
 
-	var tCategory models.TransactionCategory
-	count := new(int64)
-	db.DB.First(&tCategory, "name = ?", tDto.Category.Name).Count(count)
-
 	tModel := models.Transaction{
 		AssetID:     tDto.AssetId,
 		Description: tDto.Description,
 		Amount:      tDto.Amount,
 	}
+	tCategory, err := models.TransactionCategories(qm.Where("name=?", tDto.Category.Name)).OneG(ctx)
 
-	if *count == 0 {
-		tModel.TransactionCategory = models.TransactionCategory{Name: tDto.Category.Name}
+	if err == nil {
+		tCategory := &models.TransactionCategory{Name: tDto.Category.Name}
+		tModel.SetTransactionCategoryG(ctx, true, tCategory)
 	} else {
 		tModel.TransactionCategoryID = tCategory.ID
 	}
 
-	err = db.DB.Create(&tModel).Error
+	err = tModel.InsertG(ctx, boil.Infer())
 
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, api.ErrorResponse{Error: err.Error()})

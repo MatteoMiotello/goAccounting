@@ -4,15 +4,16 @@ import (
 	"github.com/MatteoMiotello/goAccounting/models"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/spf13/viper"
+	"github.com/volatiletech/null/v8"
 	"time"
 )
 
 type UserJwtClaims struct {
 	jwt.RegisteredClaims
-	UserId   uint
+	UserId   int64
 	Email    string
-	Name     string
-	Username string
+	Name     null.String
+	Username null.String
 }
 
 func BuildJwtFromUser(user models.User) (string, error) {
@@ -20,10 +21,8 @@ func BuildJwtFromUser(user models.User) (string, error) {
 	expiration := jwt.NewNumericDate(time.Now().Add(time.Duration(expirationMin) * time.Minute))
 
 	userClaims := UserJwtClaims{
-		UserId:   user.ID,
-		Email:    user.Email,
-		Name:     user.Name,
-		Username: user.Username,
+		UserId: user.ID,
+		Email:  user.Email,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: expiration,
 			Issuer:    viper.GetString("security.jwt.issuer"),

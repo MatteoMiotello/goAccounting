@@ -2,27 +2,23 @@ package bootstrap
 
 import (
 	"github.com/spf13/viper"
-	"log"
 	"os"
 	"strings"
 )
 
-type Config struct {
-}
-
 // read configs from .env and all files contained in /config folder
-func (c Config) Init() error {
+func InitConfig() {
 	viper.SetConfigFile(".env")
 	err := viper.ReadInConfig()
 
 	if err != nil {
-		return err
+		panic("init config failed " + err.Error())
 	}
 
 	files, err := os.ReadDir("./config/")
 
 	if err != nil {
-		log.Fatal(err)
+		panic("init config failed reading config files " + err.Error())
 	}
 
 	viper.AddConfigPath("./config")
@@ -39,9 +35,7 @@ func (c Config) Init() error {
 		err := viper.MergeInConfig()
 
 		if err != nil {
-			return err
+			panic("init config failed setting config variables " + err.Error())
 		}
 	}
-
-	return nil
 }

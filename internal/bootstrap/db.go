@@ -4,21 +4,16 @@ import (
 	"github.com/MatteoMiotello/goAccounting/internal/db"
 )
 
-type Db struct {
-}
-
-func (d Db) Init() error {
+func InitDb() {
 	err := db.Initialize(db.PostgresAdapter{})
 	if err != nil {
-		return err
+		panic("error initializing db: " + err.Error())
 	}
-	return nil
 }
 
-func (d Db) InitMigration() error {
+func InitDbMigration() {
 	err := db.Initialize(db.PostgresMigrationAdapter{})
 	if err != nil {
-		return err
+		panic("error initializing db: " + err.Error())
 	}
-	return nil
 }

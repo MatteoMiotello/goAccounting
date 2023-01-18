@@ -17,10 +17,12 @@ var (
 	dir   = flags.String("dir", "./migrations", "directory with migration files")
 )
 
-func main() {
-	bootstrap.Config{}.Init()
-	bootstrap.Db{}.InitMigration()
+func init() {
+	bootstrap.InitConfig()
+	bootstrap.InitDbMigration()
+}
 
+func main() {
 	flags.Parse(os.Args[1:])
 	args := flags.Args()
 

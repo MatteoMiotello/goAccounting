@@ -16,5 +16,8 @@
 tmp
 
 pg_data
+
+sqlboiler.toml
+goose
 # Dependency directories (remove the comment below to include it)
 # vendor/

@@ -1,7 +1,6 @@
 package api
 
 import (
-	"github.com/MatteoMiotello/goAccounting/internal/db"
 	"github.com/MatteoMiotello/goAccounting/models"
 	"github.com/MatteoMiotello/goAccounting/pkg/security"
 	"github.com/gin-gonic/gin"
@@ -25,8 +24,7 @@ func IsAuthenticated(ctx *gin.Context) {
 		return
 	}
 
-	var userModel models.User
-	err = db.DB.First(&userModel, userClaims.UserId).Error
+	userModel, err := models.FindUserG(ctx, userClaims.UserId)
 
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, ErrorResponse{

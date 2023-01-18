@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"github.com/MatteoMiotello/goAccounting/internal/db"
 	"github.com/MatteoMiotello/goAccounting/models"
 	"github.com/MatteoMiotello/goAccounting/pkg/api"
 	"github.com/gin-gonic/gin"
+	"github.com/volatiletech/sqlboiler/v4/boil"
 	"net/http"
 )
 
@@ -12,12 +12,14 @@ type Asset Base
 
 type createAssetDto struct {
 	Name   string `json:"name" binding:"required"`
-	UserId uint   `json:"userId" binding:"required"`
+	UserId int64  `json:"userId" binding:"required"`
 }
 
 func (c *Asset) GetAllAssets(context *gin.Context) {
-	var assets []models.Asset
-	err := db.DB.Preload("User").Find(&assets).Error
+	assets, err := models.Assets().AllG(context)
+	if err != nil {
+		return
+	}
 
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, api.ResFromError(err))
@@ -38,16 +40,11 @@ func (c *Asset) CreateAsset(context *gin.Context) {
 		return
 	}
 
-	err = db.DB.First(&models.User{}, assetData.UserId).Where("deleted_at is null").Error
+	var newAsset models.Asset
+	newAsset.Name = assetData.Name
+	newAsset.UserID = assetData.UserId
 
-	if err != nil {
-		context.AbortWithStatusJSON(http.StatusNotFound, api.ResFromError(err))
-		return
-	}
-
-	newAsset := &models.Asset{Name: assetData.Name, UserID: assetData.UserId}
-
-	err = db.DB.Create(newAsset).Error
+	err = newAsset.InsertG(context, boil.Infer())
 
 	if err != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, api.ResFromError(err))

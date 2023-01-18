@@ -2,15 +2,14 @@ package db
 
 import (
 	"fmt"
+	"github.com/lib/pq"
 	"github.com/spf13/viper"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
 type PostgresMigrationAdapter struct {
 }
 
-func (p PostgresMigrationAdapter) GetAdapter() gorm.Dialector {
+func (p PostgresMigrationAdapter) GetConnector() (*pq.Connector, error) {
 	dsn := fmt.Sprintf("postgres://%s@%s/%s?port=%s&password=%s",
 		viper.Get("MIGRATION_DB_USER"),
 		viper.Get("MIGRATION_DB_HOST"),
@@ -18,5 +17,5 @@ func (p PostgresMigrationAdapter) GetAdapter() gorm.Dialector {
 		viper.Get("MIGRATION_DB_PORT"),
 		viper.Get("MIGRATION_DB_PASSWORD"))
 
-	return postgres.Open(dsn)
+	return pq.NewConnector(dsn)
 }

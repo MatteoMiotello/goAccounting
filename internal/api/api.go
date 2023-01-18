@@ -1,13 +1,10 @@
-package bootstrap
+package api
 
 import (
 	"github.com/MatteoMiotello/goAccounting/internal/controllers"
 	"github.com/MatteoMiotello/goAccounting/pkg/api"
 	"github.com/gin-gonic/gin"
 )
-
-type Api struct {
-}
 
 func registerRoutes(router *gin.Engine) {
 	loginGroup := router.Group("login")
@@ -32,15 +29,13 @@ func registerRoutes(router *gin.Engine) {
 	transactionGroup.POST("", transactionController.CreateTransaction)
 }
 
-func (a Api) Init() error {
+func Run() {
 	router := gin.Default()
 
 	registerRoutes(router)
 
 	err := router.Run()
 	if err != nil {
-		return err
+		panic("error initializing api routes: " + err.Error())
 	}
-
-	return nil
 }
