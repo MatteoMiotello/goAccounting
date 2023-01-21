@@ -1,10 +1,10 @@
 package controllers
 
 import (
+	"github.com/MatteoMiotello/goAccounting/internal/repo"
 	"github.com/MatteoMiotello/goAccounting/models"
 	"github.com/MatteoMiotello/goAccounting/pkg/api"
 	"github.com/gin-gonic/gin"
-	"github.com/volatiletech/sqlboiler/v4/boil"
 	"net/http"
 )
 
@@ -16,7 +16,10 @@ type createAssetDto struct {
 }
 
 func (c *Asset) GetAllAssets(context *gin.Context) {
-	assets, err := models.Assets().AllG(context)
+	assetRepo := new(repo.AssetRepo)
+
+	assets, err := assetRepo.GetAll(context)
+
 	if err != nil {
 		return
 	}
@@ -44,7 +47,8 @@ func (c *Asset) CreateAsset(context *gin.Context) {
 	newAsset.Name = assetData.Name
 	newAsset.UserID = assetData.UserId
 
-	err = newAsset.InsertG(context, boil.Infer())
+	assetRepo := repo.NewAssetRepo()
+	err = assetRepo.Insert(context, &newAsset)
 
 	if err != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, api.ResFromError(err))

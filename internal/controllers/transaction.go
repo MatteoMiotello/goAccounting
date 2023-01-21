@@ -1,12 +1,11 @@
 package controllers
 
 import (
+	"github.com/MatteoMiotello/goAccounting/internal/repo"
 	"github.com/MatteoMiotello/goAccounting/models"
 	"github.com/MatteoMiotello/goAccounting/pkg/api"
 	"github.com/gin-gonic/gin"
 	"github.com/volatiletech/null/v8"
-	"github.com/volatiletech/sqlboiler/v4/boil"
-	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 	"github.com/volatiletech/sqlboiler/v4/types"
 	"net/http"
 )
@@ -38,7 +37,7 @@ func (t *Transaction) CreateTransaction(ctx *gin.Context) {
 		Description: tDto.Description,
 		Amount:      tDto.Amount,
 	}
-	tCategory, err := models.TransactionCategories(qm.Where("name=?", tDto.Category.Name)).OneG(ctx)
+	tCategory, err := repo.NewTransactionCategoryRepo().GetActiveByName(ctx, tDto.Category.Name)
 
 	if err == nil {
 		tCategory := &models.TransactionCategory{Name: tDto.Category.Name}
@@ -47,7 +46,7 @@ func (t *Transaction) CreateTransaction(ctx *gin.Context) {
 		tModel.TransactionCategoryID = tCategory.ID
 	}
 
-	err = tModel.InsertG(ctx, boil.Infer())
+	err = repo.NewTransactionRepo().Insert(ctx, &tModel)
 
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, api.ErrorResponse{Error: err.Error()})

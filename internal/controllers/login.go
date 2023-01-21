@@ -1,13 +1,12 @@
 package controllers
 
 import (
+	"github.com/MatteoMiotello/goAccounting/internal/repo"
 	"github.com/MatteoMiotello/goAccounting/internal/utils"
-	"github.com/MatteoMiotello/goAccounting/models"
 	"github.com/MatteoMiotello/goAccounting/pkg/api"
 	"github.com/MatteoMiotello/goAccounting/pkg/security"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
-	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 	"net/http"
 )
 
@@ -27,7 +26,7 @@ func (c *Login) SignIn(ctx *gin.Context) {
 		return
 	}
 
-	user, err := models.Users(qm.Where("email=?", signInDto.Email)).OneG(ctx)
+	user, err := repo.NewUserRepo().GetByEmail(ctx, signInDto.Email)
 
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, api.ErrorResponse{Error: "incorrect user or password"})
@@ -47,6 +46,6 @@ func (c *Login) SignIn(ctx *gin.Context) {
 		return
 	}
 
-	ctx.SetCookie(viper.GetString("security.jwt.cookie-key"), signedToken, viper.GetInt("security.jwt.expiration	"), "/", "localhost", true, true)
+	ctx.SetCookie(viper.GetString("security.jwt.cookie-key"), signedToken, viper.GetInt("security.jwt.expiration"), "/", "localhost", true, true)
 	ctx.JSON(http.StatusOK, api.Response{Data: user})
 }

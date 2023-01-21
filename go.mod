@@ -17,7 +17,7 @@ require (
 	github.com/volatiletech/strmangle v0.0.4
 	golang.org/x/crypto v0.4.0
 	gorm.io/driver/postgres v1.4.5
-	gorm.io/gorm v1.24.2
+	gorm.io/gorm v1.24.3
 )
 
 require (

@@ -1,11 +1,11 @@
 package controllers
 
 import (
+	"github.com/MatteoMiotello/goAccounting/internal/repo"
 	"github.com/MatteoMiotello/goAccounting/internal/utils"
 	"github.com/MatteoMiotello/goAccounting/models"
 	"github.com/MatteoMiotello/goAccounting/pkg/api"
 	"github.com/gin-gonic/gin"
-	"github.com/volatiletech/sqlboiler/v4/boil"
 	"net/http"
 )
 
@@ -38,10 +38,14 @@ func (u *User) CreateUser(context *gin.Context) {
 
 		return
 	}
+
+	userRepo := repo.NewUserRepo()
+
 	var newUser models.User
 	newUser.Email = userDto.Email
 	newUser.Password = newPass
-	err = newUser.InsertG(context, boil.Infer())
+
+	err = userRepo.Insert(context, &newUser)
 
 	if err != nil {
 		context.JSON(http.StatusBadRequest, api.ResFromError(err))
@@ -53,11 +57,11 @@ func (u *User) CreateUser(context *gin.Context) {
 }
 
 func (u *User) GetAllUser(context *gin.Context) {
-
-	users, err := models.Users().AllG(context)
+	userRepo := repo.NewUserRepo()
+	users, err := userRepo.GetAll(context)
 
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, api.ResFromError(err))
+		context.AbortWithStatusJSON(http.StatusInternalServerError, api.ResFromError(err))
 		return
 	}
 
